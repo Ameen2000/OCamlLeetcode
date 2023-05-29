@@ -4,6 +4,7 @@ type 'a tree =
 
 let tr = Node (1, Node (2, Leaf, Leaf), Leaf)
 
+(*Find the max depth of a binary tree*)
 let depth tr =
   let rec maxdepth tr level =
     match tr with
@@ -13,6 +14,7 @@ let depth tr =
   in
   maxdepth tr 0
 
+(*Find the diameter of a binary tree*)
 let rec dfs tr mx =
   match tr with
     | Leaf -> mx
@@ -28,3 +30,10 @@ let tree_diameter tr =
   | Node (root, left, Leaf) -> dfs tr (-1)
   | Node (root, Leaf, right) -> dfs tr (-1)
   | Node (root, left, right) -> dfs tr 0
+
+(*Invert a binary tree*)
+let rec invert tr =
+  match tr with
+  | Leaf -> Leaf
+  | Node (root, Leaf, Leaf) -> Node (root, Leaf, Leaf)
+  | Node (root, left, right) -> Node (root, invert right, invert left)
