@@ -13,13 +13,18 @@ let depth tr =
   in
   maxdepth tr 0
 
-let tree_diameter tr =
-  let rec dfs tr mx =
-    match tr with
+let rec dfs tr mx =
+  match tr with
     | Leaf -> mx
     | Node (root, left, right) ->
         let left_diameter = dfs left mx in
         let right_diameter = dfs right mx in
         1 + max left_diameter right_diameter
-  in
-  dfs tr 0
+
+let tree_diameter tr =
+  match tr with
+  | Leaf -> (-1)
+  | Node (root, Leaf, Leaf) -> 0
+  | Node (root, left, Leaf) -> dfs tr (-1)
+  | Node (root, Leaf, right) -> dfs tr (-1)
+  | Node (root, left, right) -> dfs tr 0
