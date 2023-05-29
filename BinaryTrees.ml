@@ -37,3 +37,11 @@ let rec invert tr =
   | Leaf -> Leaf
   | Node (root, Leaf, Leaf) -> Node (root, Leaf, Leaf)
   | Node (root, left, right) -> Node (root, invert right, invert left)
+
+(*Balanced Binary tree*)
+let rec is_balanced tr =
+  match tr with
+  | Leaf -> true
+  | Node (root, left, right) ->
+      if abs(depth left - depth right) > 1 then false
+      else true
