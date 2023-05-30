@@ -45,3 +45,23 @@ let rec is_balanced tr =
   | Node (root, left, right) ->
       if abs(depth left - depth right) > 1 then false
       else true
+
+(*Is Same Tree*)
+let rec is_same_tree tr1 tr2 =
+  match (tr1, tr2) with
+  | Leaf, Leaf -> true
+  | Node (root1, left1, right1), Node (root2, left2, right2) ->
+      if root1 = root2 
+      then (is_same_tree left1 left2) && (is_same_tree right1 right2)
+      else false
+  | _ -> false
+
+(*Subtree*)
+let rec is_subtree tr subtr =
+  match (tr, subtr) with
+  | _, Leaf -> true
+  | Leaf, _ -> false
+  | Node (root, left, right), Node (subroot, sleft, sright) ->
+      is_same_tree tr subtr || 
+      is_subtree left (Node (subroot, sleft, sright)) || 
+      is_subtree right (Node (subroot, sleft, sright))
