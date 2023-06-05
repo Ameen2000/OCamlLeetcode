@@ -83,3 +83,28 @@ let rec lca_bst tr node1 node2 =
       (node_val node2) < (node_val root)
       then lca_bst left node1 node2
       else root
+
+(*Tree level order traversal*)
+let level_traversal tr =
+  let rec aux tr accum =
+    match tr with
+    | Leaf -> List.rev accum
+    | Node (root, Leaf, Leaf) -> List.rev [root]::accum
+    | Node (root, left, right) ->
+        aux left (aux right ([root]::accum)) 
+  in
+  aux tr []
+
+(*Good nodes of binary tree*)
+let good_nodes tr =
+  let rec aux tr max_val =
+    match tr with
+    | Leaf -> 0
+    | Node (value, left, right) ->
+        if value >= max_val
+        then 1 + (aux left value) + (aux right value)
+        else (aux left max_val) + (aux right max_val)
+  in
+  match tr with
+  | Leaf -> 0
+  | Node (value, l, r) -> aux tr value
