@@ -4,7 +4,13 @@ type 'a tree =
 
 let tr = Node (1, Node (2, Leaf, Leaf), Leaf)
 
-let node_val node =
+exception Empty
+
+let node_val = function
+  | Leaf -> raise Empty
+  | Node (r, _, _) -> r
+
+let node_val_opt node =
   match node with
   | Leaf -> None
   | Node (k, _, _) -> Some k
@@ -76,11 +82,11 @@ let rec lca_bst tr node1 node2 =
   match tr with
   | Leaf -> Leaf
   | Node (root, left, right) ->
-      if (node_val node1) > (node_val root) &&
-      (node_val node2) > (node_val root)
+      if (node_val_opt node1) > (node_val_opt root) &&
+      (node_val_opt node2) > (node_val_opt root)
       then lca_bst right node1 node2
-      else if (node_val node1) < (node_val root) &&
-      (node_val node2) < (node_val root)
+      else if (node_val_opt node1) < (node_val_opt root) &&
+      (node_val_opt node2) < (node_val_opt root)
       then lca_bst left node1 node2
       else root
 
@@ -108,3 +114,14 @@ let good_nodes tr =
   match tr with
   | Leaf -> 0
   | Node (value, l, r) -> aux tr value
+
+let is_bst tr =
+  let rec aux root left right =
+    match root with
+    | Leaf -> true
+    | Node (v, l, r) ->
+        if not (float_of_int v > left && float_of_int v < right)
+        then false
+        else (aux l left  (float_of_int v)) && (aux r (float_of_int v) right)
+  in
+  aux tr (-.infinity) infinity
