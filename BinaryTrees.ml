@@ -145,10 +145,13 @@ let is_bst tr =
   aux tr (-.infinity) infinity
 
 (* Kth smallest element in BST *)
-let rec helper bst stack =
-  match bst with
-  | Leaf -> stack
-  | Node (root, left, right) ->
-      helper left [] |> ( @ ) (root :: stack) |> helper right
-
-let kth_smallest bst k = List.nth (List.rev @@ helper bst []) (k - 1)
+let kth_smallest bst k =
+  let rec aux bst k stack =
+    match bst with
+    | Leaf -> stack
+    | Node (root, Leaf, right) ->
+        aux right k (root :: stack)
+    | Node (root, left, right) ->
+        aux left k (root :: stack)
+  in
+  List.nth (aux bst k []) (k-1)
