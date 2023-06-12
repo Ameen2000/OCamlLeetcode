@@ -10,10 +10,27 @@ let node_val = function
   | Leaf -> raise Empty
   | Node (r, _, _) -> r
 
+let node_right = function
+  | Leaf -> raise Empty
+  | Node (_, _, r) -> r
+
+let node_left = function
+  | Leaf -> raise Empty
+  | Node (_, l, _) -> l
+
 let node_val_opt node =
   match node with
   | Leaf -> None
   | Node (k, _, _) -> Some k
+
+let number_nodes tr =
+  let rec aux tr accum =
+    match tr with
+    | Leaf -> accum
+    | Node (root, left, right) ->
+        aux right (aux left (accum+1))
+  in
+  aux tr 0
 
 (*Find the max depth of a binary tree*)
 let depth tr =
@@ -101,7 +118,7 @@ let level_traversal tr =
   in
   aux tr []
 
-(*Good nodes of binary tree*)
+(* Good nodes of binary tree *)
 let good_nodes tr =
   let rec aux tr max_val =
     match tr with
@@ -115,6 +132,7 @@ let good_nodes tr =
   | Leaf -> 0
   | Node (value, l, r) -> aux tr value
 
+(* is BST *)
 let is_bst tr =
   let rec aux root left right =
     match root with
@@ -125,3 +143,12 @@ let is_bst tr =
         else (aux l left  (float_of_int v)) && (aux r (float_of_int v) right)
   in
   aux tr (-.infinity) infinity
+
+(* Kth smallest element in BST *)
+let rec helper bst stack =
+  match bst with
+  | Leaf -> stack
+  | Node (root, left, right) ->
+      helper left [] |> ( @ ) (root :: stack) |> helper right
+
+let kth_smallest bst k = List.nth (List.rev @@ helper bst []) (k - 1)
