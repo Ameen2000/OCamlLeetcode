@@ -146,12 +146,11 @@ let is_bst tr =
 
 (* Kth smallest element in BST *)
 let kth_smallest bst k =
-  let rec aux bst k stack =
+  let rec traverse bst stack =
     match bst with
     | Leaf -> stack
-    | Node (root, Leaf, right) ->
-        aux right k (root :: stack)
     | Node (root, left, right) ->
-        aux left k (root :: stack)
+        root :: (traverse right stack) |>
+        traverse left
   in
-  List.nth (aux bst k []) (k-1)
+  List.nth (traverse bst []) (k - 1)
