@@ -32,6 +32,21 @@ let number_nodes tr =
   in
   aux tr 0
 
+let rec preorder tr =
+  match tr with
+  | Leaf -> []
+  | Node (root, left, right) ->
+      [root] @ preorder left @ preorder right
+
+let sum_tree tr =
+  let rec aux tr accum =
+    match tr with
+    | Leaf -> accum
+    | Node (root, left, right) ->
+        aux right (aux left (root + accum))
+  in
+  aux tr 0
+
 (*Find the max depth of a binary tree*)
 let depth tr =
   let rec maxdepth tr level =
@@ -154,3 +169,55 @@ let kth_smallest bst k =
         traverse left
   in
   List.nth (traverse bst []) (k - 1)
+
+(* BST from preorder and inorder traversal *)
+(* Utility functions *)
+let takewhile boolfun lst =
+  let rec aux boolfun lst accum =
+    match lst with
+    | [] -> List.rev accum
+    | h :: t ->
+        if boolfun h
+        then aux boolfun t (h :: accum)
+        else List.rev accum
+  in
+  aux boolfun lst []
+
+let rec dropwhile boolfun lst =
+  match lst with
+  | [] -> []
+  | h :: t ->
+      if boolfun h
+      then dropwhile boolfun t
+      else lst
+
+let rec remove x lst = 
+  match lst with
+  | [] -> raise Empty
+  | h :: t ->
+      if h = x
+      then t
+      else h :: (remove x t)
+
+let rec intersect lst1 lst2 =
+  match lst1 with
+  | [] -> if lst2 = [] then [] else intersect lst2 lst1
+  | h :: t ->
+      if List.mem h lst2
+      then 
+        let lst3 = remove h lst2 in
+        h :: (intersect t lst3)
+      else intersect t lst2
+
+let rec build_tree preorder inorder =
+  match preorder, inorder with
+  | [], [] -> Leaf
+  | h :: t, _ ->
+      let root = h in
+      let f = ( != ) h in
+      let left_ino = takewhile f inorder in
+      let right_ino = List.tl @@ dropwhile f inorder in
+      let left_pre = intersect preorder left_ino in
+      let right_pre = intersect preorder right_ino in
+      Node (root, build_tree left_pre left_ino, build_tree right_pre right_ino)
+  | _ -> assert false
