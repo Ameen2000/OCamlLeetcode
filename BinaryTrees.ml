@@ -153,11 +153,11 @@ let is_bst tr =
     match root with
     | Leaf -> true
     | Node (v, l, r) ->
-        if not (float_of_int v > left && float_of_int v < right)
+        if not (v > left && v < right)
         then false
-        else (aux l left  (float_of_int v)) && (aux r (float_of_int v) right)
+        else (aux l left  v) && (aux r v right)
   in
-  aux tr (-.infinity) infinity
+  aux tr (-max_int) max_int
 
 (* Kth smallest element in BST *)
 let kth_smallest bst k =
