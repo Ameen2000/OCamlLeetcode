@@ -1,11 +1,3 @@
-let rec nub lst =
-  match lst with
-  | [] as l -> l
-  | [_] as l -> l
-  | h :: t ->
-      if List.mem h t
-      then nub t
-      else h :: (nub t)
 (* find all the subsets of a list *)
 let subsets lst =
   let rec aux lst subset result =
@@ -29,3 +21,23 @@ let combination_sum lst target =
         else aux xs cur total result
   in
   aux lst [] 0 []
+
+(* permutations *)
+let rec permute lst =
+  let n = List.length lst in
+  if n = 1 
+  then [lst]
+  else
+    let rec sub e = function
+      | [] -> failwith "sub"
+      | x :: xs ->
+          if x = e
+          then xs
+          else x :: sub e xs in
+    let rec aux k =
+      let e = List.nth lst k in
+      let subperms = permute (sub e lst) in
+      let t = List.map (fun a -> e :: a) subperms in
+      if k < n - 1 then List.rev_append t (aux (k + 1)) else t in
+    aux 0
+
