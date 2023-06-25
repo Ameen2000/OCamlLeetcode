@@ -1,3 +1,4 @@
+exception Empty
 (* find all the subsets of a list *)
 let subsets lst =
   let rec aux lst subset result =
@@ -23,21 +24,25 @@ let combination_sum lst target =
   aux lst [] 0 []
 
 (* permutations *)
+let rec delete elem lst =
+  match lst with
+  | [] -> raise Empty
+  | x :: xs ->
+      if x = elem
+      then xs
+      else x :: (delete elem xs)
+
 let rec permute lst =
   let n = List.length lst in
-  if n = 1 
+  if n = 1
   then [lst]
   else
-    let rec sub e = function
-      | [] -> failwith "sub"
-      | x :: xs ->
-          if x = e
-          then xs
-          else x :: sub e xs in
-    let rec aux k =
-      let e = List.nth lst k in
-      let subperms = permute (sub e lst) in
-      let t = List.map (fun a -> e :: a) subperms in
-      if k < n - 1 then List.rev_append t (aux (k + 1)) else t in
-    aux 0
-
+  let rec aux k =
+    let elem = List.nth lst k in
+    let subperm = permute (delete elem lst) in
+    let t = List.map (fun a -> elem :: a) subperm in
+    if k < n - 1
+    then List.rev_append t (aux (k + 1))
+    else t
+  in
+  aux 0
